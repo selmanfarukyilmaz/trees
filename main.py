@@ -1,28 +1,21 @@
-from typing import Optional
-import re
-
-
-class Tree:
-
-    def __init__(self):
-        self.head: Optional[Node] = None
-
-    def __str__(self) -> str:
-        return f"{self.head.data}"
-
-
 class Node:
 
-    def __init__(self, data):
+    def __init__(self, data: int):
         self.data = data
         self.left = None
         self.right = None
 
+    # def __gt__(self, other):
+    #     return self.data > other.data
+
     def __str__(self) -> str:
         return f"{self.data}"
 
+    def __int__(self):
+        return self.data
 
-def print_inorder(root, traversal=""):
+
+def print_inorder(root: Node, traversal="") -> str:
     """Left->Root->Right"""
     if root:
         traversal = print_inorder(root.left, traversal)
@@ -31,7 +24,7 @@ def print_inorder(root, traversal=""):
     return traversal
 
 
-def print_preorder(root, traversal=""):
+def print_preorder(root: Node, traversal="") -> str:
     """Root->Left->Right"""
     if root:
         traversal += (str(root.data) + "-")
@@ -40,7 +33,7 @@ def print_preorder(root, traversal=""):
     return traversal
 
 
-def print_postorder(root, traversal=""):
+def print_postorder(root: Node, traversal="") -> str:
     """Left->Right->Root"""
     if root:
         traversal = print_postorder(root.left, traversal)
@@ -49,8 +42,8 @@ def print_postorder(root, traversal=""):
     return traversal
 
 
-def insert(root, data):
-    if root.data == None:
+def insert(root: Node, data: int):
+    if root.data is None:
         root.data = Node(data)
         return
     q = [root]
@@ -72,60 +65,121 @@ def insert(root, data):
             q.append(temp.right)
 
 
-def create_tree(n: int, root):
+def create_tree(n: int, root: Node):
     lst = list(range(1, n + 1))
-    print(lst)
     for value in lst:
         insert(root, value)
 
 
-def deleteTree(root):
+def remove_tree(root: Node):
     if root:
-        deleteTree(root.left)
-        deleteTree(root.right)
+        remove_tree(root.left)
+        remove_tree(root.right)
         print("Deleting Node:", root.data)
         del root.data, root.right, root.left
 
 
-def find_max(root):
-    all_data = print_inorder(root)
-    all_data = map(int, re.findall(r'\d+', all_data))
-    print(max(list(all_data)))
+def find_max(root: Node, temp_max: int) -> int or float:
+    # Base case
+    if root is None:
+        return float('-inf')
+
+    curdata = root.data
+    ldata = find_max(root.left, temp_max)
+    rdata = find_max(root.right, temp_max)
+
+    if type(curdata) != int:
+        curdata = int(curdata)
+        # print(res)
+    if ldata > curdata:
+        curdata = ldata
+
+    if rdata > curdata:
+        curdata = rdata
+
+    if curdata > temp_max:
+        temp_max = curdata
+
+    return temp_max
 
 
-def find_min(root):
-    all_data = print_inorder(root)
-    all_data = map(int, re.findall(r'\d+', all_data))
-    print(min(list(all_data)))
+def find_min(root: Node, temp_min: int) -> int or float:
+    # Base case
+    if root is None:
+        return float('+inf')
+
+    curdata = root.data
+    ldata = find_min(root.left, temp_min)
+    rdata = find_min(root.right, temp_min)
+
+    if type(curdata) != int:
+        curdata = int(curdata)
+        # print(res)
+    if ldata < curdata:
+        curdata = ldata
+
+    if rdata < curdata:
+        curdata = rdata
+
+    if curdata < temp_min:
+        temp_min = curdata
+
+    return temp_min
 
 
-def findNumNode(root):
-    all_data = print_inorder(root)
-    all_data = map(int, re.findall(r'\d+', all_data))
-    print(len(list(all_data)))
+def find_num_node(root: Node) -> int:
+    if root is None:
+        return 0
+
+    lcount = find_num_node(root.left)
+    rcount = find_num_node(root.right)
+
+    count = lcount + rcount + 1
+
+    return count
 
 
-def calculateAverage(root):
-    all_data = print_inorder(root)
-    all_data = list(map(int, re.findall(r'\d+', all_data)))
+def calculate_sum(root: Node) -> int:
+    if root is None:
+        return 0
 
-    sum_num = 0
-    for value in all_data:
-        sum_num = sum_num + value
+    curvalue = root.data
+    lvalues = calculate_sum(root.left)
+    rvalues = calculate_sum(root.right)
 
-    avg = sum_num / len(all_data)
-    print(avg)
+    total = lvalues + rvalues + int(curvalue)
+
+    return total
 
 
-tree = Tree()
-tree.head = Node(None)
-create_tree(6, tree.head)
-find_min(tree.head)
-find_max(tree.head)
-print_inorder(tree.head)
-deleteTree(tree.head)
-findNumNode(tree.head)
-calculateAverage(tree.head)
-print(tree.head)
-print(tree.head.left)
-print(tree.head.right)
+def calculate_average(root: Node) -> float:
+    return calculate_sum(root) / find_num_node(root)
+
+
+def find_num_leaf(root: Node):
+    if root.left is None:
+        return 1
+
+    lvalues = find_num_leaf(root.left)
+    rvalues = find_num_leaf(root.right)
+
+    leaf = lvalues + rvalues
+
+    return leaf
+
+
+def calculate_depth(root: Node): #todo
+    pass
+
+
+tree = Node(None)
+create_tree(13, tree)
+print(print_inorder(tree))
+
+print(find_max(tree, int(tree.data)))
+print(find_min(tree, int(tree.data)))
+print(find_num_node(tree))
+print(calculate_average(tree))
+print(find_num_leaf(tree)) #todo
+
+# remove_tree(tree)
