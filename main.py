@@ -1,50 +1,46 @@
+class Tree:
+    def __init__(self, root):
+        self.root = root
+
+
 class Node:
 
-    def __init__(self, data: int):
+    def __init__(self, data: int or bool):
         self.data = data
         self.left = None
         self.right = None
 
-    # def __gt__(self, other):
-    #     return self.data > other.data
-
     def __str__(self) -> str:
         return f"{self.data}"
 
-    def __int__(self):
-        return self.data
 
-
-def print_inorder(root: Node, traversal="") -> str:
+def print_inorder(root: Node):
     """Left->Root->Right"""
     if root:
-        traversal = print_inorder(root.left, traversal)
-        traversal += (str(root.data) + "-")
-        traversal = print_inorder(root.right, traversal)
-    return traversal
+        print_inorder(root.left)
+        print(str(root.data), end="-")
+        print_inorder(root.right)
 
 
-def print_preorder(root: Node, traversal="") -> str:
+def print_preorder(root: Node):
     """Root->Left->Right"""
     if root:
-        traversal += (str(root.data) + "-")
-        traversal = print_preorder(root.left, traversal)
-        traversal = print_preorder(root.right, traversal)
-    return traversal
+        print(str(root.data), end="-")
+        print_preorder(root.left)
+        print_preorder(root.right)
 
 
-def print_postorder(root: Node, traversal="") -> str:
+def print_postorder(root: Node):
     """Left->Right->Root"""
     if root:
-        traversal = print_postorder(root.left, traversal)
-        traversal = print_postorder(root.right, traversal)
-        traversal += (str(root.data) + "-")
-    return traversal
+        print_postorder(root.left)
+        print_postorder(root.right)
+        print(str(root.data), end="-")
 
 
 def insert(root: Node, data: int):
     if root.data is None:
-        root.data = Node(data)
+        root.data = data
         return
     q = [root]
 
@@ -88,43 +84,19 @@ def find_max(root: Node, temp_max: int) -> int or float:
     ldata = find_max(root.left, temp_max)
     rdata = find_max(root.right, temp_max)
 
-    if type(curdata) != int:
-        curdata = int(curdata)
-        # print(res)
-    if ldata > curdata:
-        curdata = ldata
-
-    if rdata > curdata:
-        curdata = rdata
-
-    if curdata > temp_max:
-        temp_max = curdata
-
-    return temp_max
+    return max(temp_max, rdata, ldata, curdata)
 
 
-def find_min(root: Node, temp_min: int) -> int or float:
-    # Base case
+def find_min(root: Node) -> int or float:
     if root is None:
         return float('+inf')
 
     curdata = root.data
-    ldata = find_min(root.left, temp_min)
-    rdata = find_min(root.right, temp_min)
+    ldata = find_min(root.left)
+    rdata = find_min(root.right)
+    print(rdata, ldata, curdata)
 
-    if type(curdata) != int:
-        curdata = int(curdata)
-        # print(res)
-    if ldata < curdata:
-        curdata = ldata
-
-    if rdata < curdata:
-        curdata = rdata
-
-    if curdata < temp_min:
-        temp_min = curdata
-
-    return temp_min
+    return min(rdata, ldata, curdata)
 
 
 def find_num_node(root: Node) -> int:
@@ -147,7 +119,7 @@ def calculate_sum(root: Node) -> int:
     lvalues = calculate_sum(root.left)
     rvalues = calculate_sum(root.right)
 
-    total = lvalues + rvalues + int(curvalue)
+    total = lvalues + rvalues + curvalue
 
     return total
 
@@ -157,7 +129,10 @@ def calculate_average(root: Node) -> float:
 
 
 def find_num_leaf(root: Node):
-    if root.left is None:
+    if not root:
+        return 0
+
+    if not root.left and not root.right:
         return 1
 
     lvalues = find_num_leaf(root.left)
@@ -168,18 +143,29 @@ def find_num_leaf(root: Node):
     return leaf
 
 
-def calculate_depth(root: Node): #todo
-    pass
+def calculate_depth(root: Node):
+    if not root:
+        return 0
+
+    if not root.left and not root.right:
+        return 0
+
+    rdepth = calculate_depth(root.right)
+    ldepth = calculate_depth(root.left)
+
+    return max(rdepth, ldepth) + 1
 
 
-tree = Node(None)
-create_tree(13, tree)
-print(print_inorder(tree))
+tree = Tree(Node(None))
+create_tree(8, tree.root)
+# print(print_inorder(tree.root))
+# print_inorder(tree.root)
+print(calculate_depth(tree.root))
+# print(find_min(tree.root))
+# print(find_min(tree, int(tree.root)))
+# print(find_num_node(tree.root))
+# print(calculate_average(tree.root))
+# print(find_num_leaf(tree.root))
 
-print(find_max(tree, int(tree.data)))
-print(find_min(tree, int(tree.data)))
-print(find_num_node(tree))
-print(calculate_average(tree))
-print(find_num_leaf(tree)) #todo
 
-# remove_tree(tree)
+# remove_tree(tree.root)
