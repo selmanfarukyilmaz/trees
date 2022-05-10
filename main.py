@@ -1,3 +1,6 @@
+import sys
+
+
 class Tree:
     def __init__(self, root):
         self.root = root
@@ -156,11 +159,64 @@ def calculate_depth(root: Node):
     return max(rdepth, ldepth) + 1
 
 
+# def inorder_traversal(root: Node, target):
+
+#     if root:
+#         inorder_traversal(root.left, target)
+#         print(str(root.data), end="-")
+#         inorder_traversal(root.right, target)
+
+
+def bfs(root: Node, target):
+    queue = [root]
+    counter = 0
+    while queue:
+        counter += 1
+        u = queue.pop(0)
+
+        if u.left:
+            queue.append(u.left)
+        if u.right:
+            queue.append(u.right)
+
+        print(u)
+        if u.data == target:
+            print(f"Number of steps for dfs: {counter}")
+            return
+    print("The data you are looking for is not found in the tree")
+
+
+def dfs(root: Node, target):
+    stack = [root]
+    counter = 0
+    while stack:
+        counter += 1
+        u = stack.pop()
+
+        if u.left:
+            stack.append(u.left)
+        if u.right:
+            stack.append(u.right)
+
+        print(u)
+        if u.data == target:
+            print(f"Number of steps for dfs: {counter}")
+            return
+    print("The data you are looking for is not found in the tree")
+
+
 tree = Tree(Node(None))
 create_tree(8, tree.root)
+bfs(tree.root, 4)
+print("\n")
+dfs(tree.root, 8)
+print("\n")
+dfs(tree.root, 99)
+
+# print(tree.root, tree.root.right, tree.root.right.left, tree.root.left.left.left)
 # print(print_inorder(tree.root))
 # print_inorder(tree.root)
-print(calculate_depth(tree.root))
+# print(calculate_depth(tree.root))
 # print(find_min(tree.root))
 # print(find_min(tree, int(tree.root)))
 # print(find_num_node(tree.root))
