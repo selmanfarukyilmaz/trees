@@ -159,12 +159,17 @@ def calculate_depth(root: Node):
     return max(rdepth, ldepth) + 1
 
 
-# def inorder_traversal(root: Node, target):
+############################################################
+test = False
 
-#     if root:
-#         inorder_traversal(root.left, target)
-#         print(str(root.data), end="-")
-#         inorder_traversal(root.right, target)
+
+def inorder_traversal(root: Node, target):
+    if root:
+        inorder_traversal(root.left, target)
+        if target == root.data:
+            print(str(root.data)+ " Founded")
+        inorder_traversal(root.right, target)
+
 
 
 def bfs(root: Node, target):
@@ -207,11 +212,12 @@ def dfs(root: Node, target):
 
 tree = Tree(Node(None))
 create_tree(8, tree.root)
-bfs(tree.root, 4)
+inorder_traversal(tree.root, 4)
+# bfs(tree.root, 4)
 print("\n")
-dfs(tree.root, 8)
+# dfs(tree.root, 8)
 print("\n")
-dfs(tree.root, 99)
+# dfs(tree.root, 99)
 
 # print(tree.root, tree.root.right, tree.root.right.left, tree.root.left.left.left)
 # print(print_inorder(tree.root))
